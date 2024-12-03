@@ -1,7 +1,10 @@
-﻿internal class Program
+﻿using System;
+
+internal class Program
 {
     private static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        DateTime dateTest = new DateTime(2024,12,3);
+        System.Console.WriteLine(dateTest.ToString("yyyy-MM-dd"));
     }
 }
