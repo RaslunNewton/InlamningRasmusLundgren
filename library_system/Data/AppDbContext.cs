@@ -16,7 +16,13 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<BookAuthor>();
+        modelBuilder.Entity<Book>()     // M:M relation with books-authors using a bridge table BookAuthor
+            .HasMany(b => b.Authors)    // (each has a 1:M relation to BookAuthor).
+            .WithMany(a => a.Books)
+            .UsingEntity<BookAuthor>();
 
+        modelBuilder.Entity<Book>()
+            .HasMany(b => b.Loans)
+            .WithOne(l => l.Book);
     }
 }
