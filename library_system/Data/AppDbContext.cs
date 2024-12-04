@@ -24,5 +24,9 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Book>()
             .HasMany(b => b.Loans)
             .WithOne(l => l.Book);
+        
+        modelBuilder.Entity<Loan>()
+            .Property(l => l.status)
+            .HasConversion<string>();
     }
 }
