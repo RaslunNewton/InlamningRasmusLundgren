@@ -1,4 +1,5 @@
 ﻿using System;
+using library_system.Functions;
 
 internal class Program
 {
@@ -56,21 +57,26 @@ internal class Program
 
             switch (manageInput)
             {
-                // case "1":
-                //     AddBook();
-                //     break;
-                // case "2":
-                //     AddAuthor();
-                //     break;
-                // case "3":
-                //     BookAuthorRelation();
-                //     break;
-                // case "4":
-                //     CreateLoan();
-                //     break;
-                // case "5":
-                //     DeleteData();
-                //     break;
+                case "1":
+                    Console.Clear();
+                    ManageData.AddBook();
+                    break;
+                case "2":
+                    Console.Clear();
+                    ManageData.AddAuthor();
+                    break;
+                case "3":
+                    Console.Clear();
+                    ManageData.BookAuthorRelation();
+                    break;
+                case "4":
+                    Console.Clear();
+                    ManageData.CreateLoan();
+                    break;
+                case "5":
+                    Console.Clear();
+                    ManageData.DeleteData();
+                    break;
                 case "Q":
                 case "q":
                     Console.Clear();
@@ -102,21 +108,26 @@ internal class Program
 
             switch (listInput)
             {
-                // case "1":
-                //     AllBooks();
-                //     break;
-                // case "2":
-                //     BooksFromAuthor();
-                //     break;
-                // case "3":
-                //     AuthorsByBook();
-                //     break;
-                // case "4":
-                //     CurrentLoans();
-                //     break;
-                // case "5":
-                //     LoanHistory();
-                //     break;
+                case "1":
+                    Console.Clear();
+                    ListData.AllBooks();
+                    break;
+                case "2":
+                    Console.Clear();
+                    ListData.BooksFromAuthor();
+                    break;
+                case "3":
+                    Console.Clear();
+                    ListData.BookWrittenBy();
+                    break;
+                case "4":
+                    Console.Clear();
+                    ListData.CurrentLoans();
+                    break;
+                case "5":
+                    Console.Clear();
+                    ListData.LoanHistory();
+                    break;
                 case "Q":
                 case "q":
                     Console.Clear();
