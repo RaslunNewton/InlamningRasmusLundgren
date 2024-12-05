@@ -13,18 +13,31 @@ namespace library_system.Functions
             {
                 try
                 {
+                    // Creates list of book entities including their authors
                     var books = context.Books
                         .Include(b => b.Authors)
                         .ToList();
 
+                    // Iterates through every book in "books" and adds every author of each book to an string which is
+                    // represented along with each book
+                    System.Console.WriteLine($"{"BOOK NAME",-29}{"DATE PUBLISHED",-34}{"AUTHOR(s)",-30}");
+                    System.Console.WriteLine("---------------------------------------------------------------------------------------------");
                     foreach(var b in books)
                     {
-                        for (int i = 0; i < 2; i++)
+                        string sAuthors = null;
+                        if(!b.Authors.Any())
                         {
-                            System.Console.WriteLine(b.Authors[i].);
+                            sAuthors += "NO ASSIGNED AUTHOR\n";
                         }
-                        System.Console.WriteLine($"{b.bookName} {b}");
+                        foreach (var a in b.Authors)
+                        {
+                            sAuthors += $"{a.authorName}\n{"",-63}";
+                        }
+                        System.Console.WriteLine($"{b.bookName,-29}{b.datePublished,-34}{sAuthors,-30}");
                     }
+                    System.Console.WriteLine($"Press any key to continue.");
+                    Console.ReadKey();
+                    Console.Clear();
                 }
                 catch (Exception ex)
                 {

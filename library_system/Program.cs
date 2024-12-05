@@ -33,7 +33,7 @@ internal class Program
                     break;
                 default:
                     Console.Clear();
-                    System.Console.WriteLine("Invalid input, try again.\nss");
+                    System.Console.WriteLine("Invalid input, try again.\n");
                     continue;
             }
         }

@@ -1,5 +1,6 @@
 using System;
 using library_system.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace library_system.Functions
 {
@@ -131,7 +132,7 @@ namespace library_system.Functions
                     {
                         throw new Exception("Name input is invalid. Try again.");
                     }
-                    
+
                     // Checks if book exists in database, if so, entity is assigned to the object
                     // If not, an exception is thrown
                     var books = context.Books.ToList();
@@ -142,10 +143,10 @@ namespace library_system.Functions
                             chosenBook = book;
                             break;
                         }
-                        else
-                        {
-                            throw new Exception("A book with this name doesn't exist in the database.");
-                        }
+                    }
+                    if (chosenBook == null)
+                    {
+                        throw new Exception("A book with this name doesn't exist in the database.");
                     }
 
                     System.Console.Write("Enter name of author: ");
@@ -154,7 +155,7 @@ namespace library_system.Functions
                     {
                         throw new Exception("Name input is invalid. Try again.");
                     }
-                    
+
                     // Checks if author exists in database, if so, entity is assigned to the object
                     // If not, an exception is thrown
                     var authors = context.Authors.ToList();
@@ -165,10 +166,10 @@ namespace library_system.Functions
                             chosenAuthor = author;
                             break;
                         }
-                        else
-                        {
-                            throw new Exception("An author with this name doesn't exist in the database.");
-                        }
+                    }
+                    if (chosenAuthor == null)
+                    {
+                        throw new Exception("An author with this name doesn't exist in the database.");
                     }
 
                     // Creates new object with users inputs and adds to database
@@ -197,7 +198,90 @@ namespace library_system.Functions
         }
         public static void CreateLoan()
         {
+            using (var context = new AppDbContext())
+            {
+                var transaction = context.Database.BeginTransaction();
+                try
+                {
+                    // Declares unassigned object to later be assigned by user
+                    Book chosenBook = null;
 
+                    // Asks user to input the name of the book they want to add an loan
+                    // Throws exception if input is invalid in invalid format
+                    System.Console.Write("Enter name of book you want to loan: ");
+                    string bookNameInput = Console.ReadLine();
+                    if (string.IsNullOrEmpty(bookNameInput))
+                    {
+                        throw new Exception("Name input is invalid.");
+                    }
+
+                    // Checks if book exists in database, if so, entity is assigned to the object
+                    // If not, an exception is thrown
+                    var books = context.Books
+                        .Include(b => b.Loans)
+                        .ToList();
+                    foreach (var book in books)
+                    {
+                        if (book.bookName == bookNameInput)
+                        {
+                            // Checks if book is available to be loaned, otherwise throws an exception
+                            foreach (var l in book.Loans)
+                            {
+                                if (l.status == Loan.enStatus.Loaned)
+                                {
+                                    throw new Exception($"This book is already loaned right now. You can loan it after {l.returnDate}.");
+                                }
+                            }
+                            chosenBook = book;
+                            break;
+                        }
+                        else
+                        {
+                            throw new Exception("A book with this name doesn't exist in the database.");
+                        }
+                    }
+
+                    // Asks for the loaners name and then phone number
+                    System.Console.Write("Enter name of loaner: ");
+                    string loanerNameInput = Console.ReadLine();
+                    if (string.IsNullOrEmpty(loanerNameInput))
+                    {
+                        throw new Exception("Name input is invalid.");
+                    }
+                    System.Console.Write("Enter phone number of loaner: ");
+                    string loanerPnInput = Console.ReadLine();
+                    if (string.IsNullOrEmpty(loanerPnInput))
+                    {
+                        throw new Exception("Phone number input is invalid.");
+                    }
+
+                    // Creating loan and saving in database, can be loaned in 30 days
+                    var newLoan = new Loan
+                    {
+                        loanerName = loanerNameInput,
+                        phoneNumber = loanerPnInput,
+                        Book = chosenBook,
+                        loanDate = DateOnly.ParseExact(DateTime.Now.ToString(), "yyyy-MMdd"),
+                        returnDate = DateOnly.ParseExact(DateTime.Now.AddDays(30).ToString(), "yyyy-MMdd"),
+                        status = Loan.enStatus.Loaned
+                    };
+                    context.Loans.Add(newLoan);
+
+                    // Saves loan in database if no exception was thrown
+                    context.SaveChanges();
+                    transaction.Commit();
+
+                    Console.Clear();
+                    System.Console.WriteLine($"{loanerNameInput} now has a loan on {bookNameInput}. Last day to return book: {newLoan.returnDate}.");
+                }
+                catch (Exception ex)
+                {
+                    // Rolls back the transaction if an exception was thrown to make sure all necessary data has been added correctly
+                    transaction.Rollback();
+                    Console.Clear();
+                    System.Console.WriteLine($"{ex.Message} Try again.\n");
+                }
+            }
         }
         public static void DeleteData()
         {
