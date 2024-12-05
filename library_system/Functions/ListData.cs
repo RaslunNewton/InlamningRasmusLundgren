@@ -1,4 +1,7 @@
 using System;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using library_system.Models;
 
 namespace library_system.Functions
 {

@@ -7,7 +7,7 @@ namespace library_system.Models
     {
         public int bookId { get; set; }
         public string bookName { get; set; }
-        public DateTime yearPublished { get; set; }
+        public DateOnly datePublished { get; set; }
 
         // TEST
         public ICollection<Author> Authors { get; set; }
