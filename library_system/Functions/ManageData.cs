@@ -18,7 +18,7 @@ namespace library_system.Functions
                     // User choooses name of book, throws exception if input is invalid
                     System.Console.Write("Enter name of book: ");
                     string nameInput = Console.ReadLine();
-                    if (string.IsNullOrEmpty(nameInput))
+                    if (string.IsNullOrEmpty(nameInput) || string.IsNullOrWhiteSpace(nameInput))
                     {
                         throw new Exception("Name input is invalid.");
                     }
@@ -235,10 +235,10 @@ namespace library_system.Functions
                             chosenBook = book;
                             break;
                         }
-                        else
-                        {
-                            throw new Exception("A book with this name doesn't exist in the database.");
-                        }
+                    }
+                    if (chosenBook == null)
+                    {
+                        throw new Exception("A book with this name doesn't exist in the database.");
                     }
 
                     // Asks for the loaners name and then phone number
@@ -272,7 +272,7 @@ namespace library_system.Functions
                     transaction.Commit();
 
                     Console.Clear();
-                    System.Console.WriteLine($"{loanerNameInput} now has a loan on {bookNameInput}. Last day to return book: {newLoan.returnDate}.");
+                    System.Console.WriteLine($"{loanerNameInput} now has a loan on {bookNameInput}. Last day to return book: {newLoan.returnDate}.\n");
                 }
                 catch (Exception ex)
                 {
@@ -310,11 +310,12 @@ namespace library_system.Functions
                             .ToList();
 
                         // Throws exception if currentLoans is empty
-                        if(!currentLoans.Any())
+                        if (!currentLoans.Any())
                         {
-                            throw new Exception("You have no active loans");
+                            throw new Exception("You have no active loans.");
                         }
 
+                        Console.Clear();
                         System.Console.WriteLine($"{"BOOK NAME",-29}{"LOAN ID",-17}{"LOANER",-26}{"STATUS",-26}");
                         foreach (var l in currentLoans)
                         {
@@ -342,7 +343,7 @@ namespace library_system.Functions
                         {
                             throw new Exception("This loan doesn't exist in the database.");
                         }
-                        
+
                         // If no exceptions are thrown, status is changed to returned
                         chosenLoan.status = Loan.enStatus.Returned;
 
@@ -397,6 +398,8 @@ namespace library_system.Functions
                     {
                         // Declares unassigned objects to later be assigned by user
                         Book chosenBook = null;
+
+                        System.Console.WriteLine("WARNING: Deleting a book will also delete all related loan history.");
 
                         // Asks user to input the name of the book they want to add an author too
                         // Throws exception if input is invalid in invalid format
@@ -518,7 +521,9 @@ namespace library_system.Functions
                             ListData.LoanHistory();
 
                             // Throws exception if there isn't any loans
-                            var loans = context.Loans.ToList();
+                            var loans = context.Loans
+                                .Include(l => l.Book)
+                                .ToList();
                             if (!loans.Any())
                             {
                                 throw new Exception("There are no loans as of now.");
@@ -544,7 +549,6 @@ namespace library_system.Functions
                             {
                                 throw new Exception("This loan doesn't exist in the database.");
                             }
-
                             context.Loans.Remove(chosenLoan);
 
                             // Saves changes to database and commit transaction if no exceptions where thrown
@@ -573,7 +577,18 @@ namespace library_system.Functions
         }
         public static void AddSeedData()
         {
+            using (var context = AppDbContext())
+            try
+            {
 
+            }
+            catch (Exception ex)
+            {
+                // Rolls back the transaction if an exception was thrown to make sure all necessary data has been added correctly
+                transaction.Rollback();
+                Console.Clear();
+                System.Console.WriteLine($"{ex.Message} Try again.\n");
+            }
         }
     }
 }
