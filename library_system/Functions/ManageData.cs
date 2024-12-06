@@ -371,6 +371,7 @@ namespace library_system.Functions
             System.Console.WriteLine("1 - Book");
             System.Console.WriteLine("2 - Author");
             System.Console.WriteLine("3 - Loan");
+            System.Console.WriteLine("4 - Clear database");
             string choiceInput = Console.ReadLine();
 
             switch (choiceInput)
@@ -383,6 +384,9 @@ namespace library_system.Functions
                     break;
                 case "3":
                     DeleteLoan();
+                    break;
+                case "4":
+                    DeleteAll();
                     break;
                 default:
                     Console.Clear();
@@ -574,6 +578,44 @@ namespace library_system.Functions
                     return;
                 }
             }
+            static void DeleteAll()
+            {
+                // DISCLAIMER: Ask user if deleting everyting is necessary
+                Console.Clear();
+                System.Console.WriteLine("Are you sure you want to DELETE everyting? This action can't be reversed.\n");
+                System.Console.Write("Type (yes) to proceed. Type anything else to cancel. ");
+
+                string proceed = Console.ReadLine();
+                if (proceed.ToLower() == "yes")
+                {
+                    using (var context = new AppDbContext())
+                    {
+                        System.Console.WriteLine("");
+                        var transaction = context.Database.BeginTransaction();
+                        try
+                        {
+                            context.Books.ExecuteDelete();
+                            context.Authors.ExecuteDelete();
+                            
+                            Console.Clear();
+                            System.Console.WriteLine("Database is now empty.\n");
+                            transaction.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            // Rolls back the transaction if an exception was thrown to make sure all necessary data has been added correctly
+                            transaction.Rollback();
+                            Console.Clear();
+                            System.Console.WriteLine($"{ex.Message} Try again.\n");
+                        }
+                    }
+                }
+                else
+                {
+                    Console.Clear();
+                    return;
+                }
+            }
         }
         public static void AddSeedData()
         {
@@ -629,6 +671,18 @@ namespace library_system.Functions
                     context.Authors.Add(seededAuthor1);
                     context.Authors.Add(seededAuthor2);
                     context.Authors.Add(seededAuthor3);
+
+                    var books = context.Books.ToList();
+                    if (books.Any(b => (b.bookName == seededBook1.bookName) || (b.bookName == seededBook2.bookName) || (b.bookName == seededBook3.bookName) || (b.bookName == seededBook4.bookName) || (b.bookName == seededBook5.bookName)))
+                    {
+                        throw new Exception("Seed data already exists in database.");
+                    }
+
+                    var authors = context.Authors.ToList();
+                    if (authors.Any(a => (a.authorName == seededAuthor1.authorName) || (a.authorName == seededAuthor2.authorName) || (a.authorName == seededAuthor3.authorName)))
+                    {
+                        throw new Exception("Seed data already exists in database.");
+                    }
 
                     context.SaveChanges();
 
