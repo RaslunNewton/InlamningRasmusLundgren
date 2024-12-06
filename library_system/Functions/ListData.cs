@@ -164,31 +164,31 @@ namespace library_system.Functions
             {
                 try
                 {
-                // Creates list of book entities including their authors
-                var books = context.Books
-                    .Include(b => b.Loans)
-                    .ToList();
+                    // Creates list of book entities including their authors
+                    var books = context.Books
+                        .Include(b => b.Loans)
+                        .ToList();
 
-                // Iterates through every book in "books" and adds every author of each book to an string which is
-                // represented along with each book
-                System.Console.WriteLine($"{"BOOK NAME",-29}{"LOAN ID",-17}{"LOANER",-26}{"STATUS",-16}{"RETURN DATE",-15}");
-                System.Console.WriteLine("----------------------------------------------------------------------------------------------------");
-                
-                if (!books.Any(b => b.Loans.Any(l => l.status == Loan.enStatus.Loaned)))
-                {
-                    throw new Exception("No active loans as of now.");
-                }
-                foreach (var b in books)
-                {
-                    foreach (var l in b.Loans)
+                    // Iterates through every book in "books" and adds every author of each book to an string which is
+                    // represented along with each book
+                    System.Console.WriteLine($"{"BOOK NAME",-29}{"LOAN ID",-17}{"LOANER",-26}{"STATUS",-16}{"RETURN DATE",-15}");
+                    System.Console.WriteLine("----------------------------------------------------------------------------------------------------");
+
+                    if (!books.Any(b => b.Loans.Any(l => l.status == Loan.enStatus.Loaned)))
                     {
-                        if (l.status == Loan.enStatus.Loaned)
+                        throw new Exception("No active loans as of now.");
+                    }
+                    foreach (var b in books)
+                    {
+                        foreach (var l in b.Loans)
                         {
-                            System.Console.WriteLine($"{b.bookName,-29}{l.loanId,-17}{l.loanerName,-26}{l.status,-16}{l.returnDate.ToString("yyyy-MM-dd"),-15}");
+                            if (l.status == Loan.enStatus.Loaned)
+                            {
+                                System.Console.WriteLine($"{b.bookName,-29}{l.loanId,-17}{l.loanerName,-26}{l.status,-16}{l.returnDate.ToString("yyyy-MM-dd"),-15}");
+                            }
                         }
                     }
-                }
-                Console.WriteLine();
+                    Console.WriteLine();
                 }
                 catch (Exception ex)
                 {
@@ -201,23 +201,35 @@ namespace library_system.Functions
         {
             using (var context = new AppDbContext())
             {
-                // Creates list of book entities including their authors
-                var books = context.Books
-                    .Include(b => b.Loans)
-                    .ToList();
-
-                // Iterates through every book in "books" and adds every author of each book to an string which is
-                // represented along with each book
-                System.Console.WriteLine($"{"BOOK NAME",-29}{"LOAN ID",-17}{"LOANER",-26}{"STATUS",-16}{"RETURN DATE",-15}");
-                System.Console.WriteLine("----------------------------------------------------------------------------------------------------");
-                foreach (var b in books)
+                try
                 {
-                    foreach (var l in b.Loans)
+                    // Creates list of book entities including their authors
+                    var books = context.Books
+                        .Include(b => b.Loans)
+                        .ToList();
+
+                    if (!books.Any(b => b.Loans.Any()))
                     {
-                        System.Console.WriteLine($"{b.bookName,-29}{l.loanId,-17}{l.loanerName,-26}{l.status,-16}{l.returnDate.ToString("yyyy-MM-dd"),-15}");
+                        throw new Exception("Loan history is empty as of now.");
                     }
+                    // Iterates through every book in "books" and adds every author of each book to an string which is
+                    // represented along with each book
+                    System.Console.WriteLine($"{"BOOK NAME",-29}{"LOAN ID",-17}{"LOANER",-26}{"STATUS",-16}{"RETURN DATE",-15}");
+                    System.Console.WriteLine("----------------------------------------------------------------------------------------------------");
+                    foreach (var b in books)
+                    {
+                        foreach (var l in b.Loans)
+                        {
+                            System.Console.WriteLine($"{b.bookName,-29}{l.loanId,-17}{l.loanerName,-26}{l.status,-16}{l.returnDate.ToString("yyyy-MM-dd"),-15}");
+                        }
+                    }
+                    Console.WriteLine();
                 }
-                Console.WriteLine();
+                catch (Exception ex)
+                {
+                    Console.Clear();
+                    System.Console.WriteLine($"{ex.Message} Try again.\n");
+                }
             }
         }
     }

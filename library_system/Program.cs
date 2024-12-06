@@ -5,8 +5,6 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        ManageData.AddSeedData();
-
         bool exitMainMenu = false;
         while (!exitMainMenu)
         {
@@ -50,6 +48,7 @@ internal class Program
             System.Console.WriteLine("4 - Loan a book");
             System.Console.WriteLine("5 - Return a book");
             System.Console.WriteLine("6 - Delete loan, book or author");
+            System.Console.WriteLine("7 - Add seed data (ONLY USE ONCE)");
             System.Console.WriteLine("Q - Return to main menu");
             System.Console.Write("\nWhat do you want to do?: ");
 
@@ -80,6 +79,10 @@ internal class Program
                 case "6":
                     Console.Clear();
                     ManageData.DeleteData();
+                    break;
+                case "7":
+                    Console.Clear();
+                    ManageData.AddSeedData();
                     break;
                 case "Q":
                 case "q":

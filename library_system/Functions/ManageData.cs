@@ -1,4 +1,5 @@
 using System;
+using System.Transactions;
 using library_system.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -573,21 +574,114 @@ namespace library_system.Functions
                     return;
                 }
             }
-
         }
         public static void AddSeedData()
         {
-            using (var context = AppDbContext())
-            try
+            using (var context = new AppDbContext())
             {
+                var transaction = context.Database.BeginTransaction();
+                try
+                {
+                    var seededBook1 = new Book
+                    {
+                        bookName = "Harry Potter 1",
+                        datePublished = DateOnly.ParseExact("1997-06-26", "yyyy-MM-dd")
+                    };
+                    var seededBook2 = new Book
+                    {
+                        bookName = "Harry Potter 2",
+                        datePublished = DateOnly.ParseExact("1999-07-06", "yyyy-MM-dd")
+                    };
+                    var seededBook3 = new Book
+                    {
+                        bookName = "IT",
+                        datePublished = DateOnly.ParseExact("1986-11-15", "yyyy-MM-dd")
+                    };
+                    var seededBook4 = new Book
+                    {
+                        bookName = "Harry Potter's misery",
+                        datePublished = DateOnly.ParseExact("2000-06-18", "yyyy-MM-dd")
+                    };
+                    var seededBook5 = new Book
+                    {
+                        bookName = "1984",
+                        datePublished = DateOnly.ParseExact("1949-06-08", "yyyy-MM-dd")
+                    };
+                    context.Books.Add(seededBook1);
+                    context.Books.Add(seededBook2);
+                    context.Books.Add(seededBook3);
+                    context.Books.Add(seededBook4);
+                    context.Books.Add(seededBook5);
 
-            }
-            catch (Exception ex)
-            {
-                // Rolls back the transaction if an exception was thrown to make sure all necessary data has been added correctly
-                transaction.Rollback();
-                Console.Clear();
-                System.Console.WriteLine($"{ex.Message} Try again.\n");
+                    var seededAuthor1 = new Author
+                    {
+                        authorName = "JK Rowling"
+                    };
+                    var seededAuthor2 = new Author
+                    {
+                        authorName = "Stephen King"
+                    };
+                    var seededAuthor3 = new Author
+                    {
+                        authorName = "George Orwell"
+
+                    };
+                    context.Authors.Add(seededAuthor1);
+                    context.Authors.Add(seededAuthor2);
+                    context.Authors.Add(seededAuthor3);
+
+                    context.SaveChanges();
+
+                    var seededBoAu1 = new BookAuthor
+                    {
+                        bookId = context.Books.First(b => b.bookName == "Harry Potter 1").bookId,
+                        authorId = context.Authors.First(a => a.authorName == "JK Rowling").authorId
+                    };
+                    var seededBoAu2 = new BookAuthor
+                    {
+                        bookId = context.Books.First(b => b.bookName == "Harry Potter 2").bookId,
+                        authorId = context.Authors.First(a => a.authorName == "JK Rowling").authorId
+                    };
+                    var seededBoAu3 = new BookAuthor
+                    {
+                        bookId = context.Books.First(b => b.bookName == "IT").bookId,
+                        authorId = context.Authors.First(a => a.authorName == "Stephen King").authorId
+                    };
+                    var seededBoAu4 = new BookAuthor
+                    {
+                        bookId = context.Books.First(b => b.bookName == "Harry Potter's misery").bookId,
+                        authorId = context.Authors.First(a => a.authorName == "JK Rowling").authorId
+                    };
+                    var seededBoAu5 = new BookAuthor
+                    {
+                        bookId = context.Books.First(b => b.bookName == "Harry Potter's misery").bookId,
+                        authorId = context.Authors.First(a => a.authorName == "Stephen King").authorId
+                    };
+                    var seededBoAu6 = new BookAuthor
+                    {
+                        bookId = context.Books.First(b => b.bookName == "1984").bookId,
+                        authorId = context.Authors.First(a => a.authorName == "George Orwell").authorId
+                    };
+                    context.BookAuthor.Add(seededBoAu1);
+                    context.BookAuthor.Add(seededBoAu2);
+                    context.BookAuthor.Add(seededBoAu3);
+                    context.BookAuthor.Add(seededBoAu4);
+                    context.BookAuthor.Add(seededBoAu5);
+                    context.BookAuthor.Add(seededBoAu6);
+
+                    // Saves changes to database and commit transaction if no exceptions where thrown
+                    context.SaveChanges();
+                    transaction.Commit();
+
+                    System.Console.WriteLine("Database has been seeded!");
+                }
+                catch (Exception ex)
+                {
+                    // Rolls back the transaction if an exception was thrown to make sure all necessary data has been added correctly
+                    transaction.Rollback();
+                    Console.Clear();
+                    System.Console.WriteLine($"{ex.Message} Try again.\n");
+                }
             }
         }
     }
