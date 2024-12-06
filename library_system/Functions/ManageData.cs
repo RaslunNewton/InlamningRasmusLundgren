@@ -19,7 +19,7 @@ namespace library_system.Functions
                     // User choooses name of book, throws exception if input is invalid
                     System.Console.Write("Enter name of book: ");
                     string nameInput = Console.ReadLine();
-                    if (string.IsNullOrEmpty(nameInput) || string.IsNullOrWhiteSpace(nameInput))
+                    if (string.IsNullOrWhiteSpace(nameInput))
                     {
                         throw new Exception("Name input is invalid.");
                     }
@@ -74,7 +74,7 @@ namespace library_system.Functions
                     // User choooses name of author, throws exception if input is invalid
                     System.Console.Write("Enter name of author: ");
                     string nameInput = Console.ReadLine();
-                    if (string.IsNullOrEmpty(nameInput))
+                    if (string.IsNullOrWhiteSpace(nameInput))
                     {
                         throw new Exception("Name input is invalid. Try again.");
                     }
@@ -125,11 +125,11 @@ namespace library_system.Functions
                     Book chosenBook = null;
                     Author chosenAuthor = null;
 
-                    // Asks user to input the name of the book they want to add an author too
+                    // Asks user to input the name of the book they want to add an author to
                     // Throws exception if input is invalid in invalid format
                     System.Console.Write("Enter name of book: ");
                     string bookNameInput = Console.ReadLine();
-                    if (string.IsNullOrEmpty(bookNameInput))
+                    if (string.IsNullOrWhiteSpace(bookNameInput))
                     {
                         throw new Exception("Name input is invalid. Try again.");
                     }
@@ -152,7 +152,7 @@ namespace library_system.Functions
 
                     System.Console.Write("Enter name of author: ");
                     string authorNameInput = Console.ReadLine();
-                    if (string.IsNullOrEmpty(authorNameInput))
+                    if (string.IsNullOrWhiteSpace(authorNameInput))
                     {
                         throw new Exception("Name input is invalid. Try again.");
                     }
@@ -211,7 +211,7 @@ namespace library_system.Functions
                     // Throws exception if input is invalid in invalid format
                     System.Console.Write("Enter name of book you want to loan: ");
                     string bookNameInput = Console.ReadLine();
-                    if (string.IsNullOrEmpty(bookNameInput))
+                    if (string.IsNullOrWhiteSpace(bookNameInput))
                     {
                         throw new Exception("Name input is invalid.");
                     }
@@ -230,7 +230,7 @@ namespace library_system.Functions
                             {
                                 if (l.status == Loan.enStatus.Loaned)
                                 {
-                                    throw new Exception($"This book is already loaned right now. You can loan it after {l.returnDate}.");
+                                    throw new Exception($"This book is already loaned right now. You can loan it after {l.returnDate.ToString("yyyy-MM-dd")}.");
                                 }
                             }
                             chosenBook = book;
@@ -245,13 +245,13 @@ namespace library_system.Functions
                     // Asks for the loaners name and then phone number
                     System.Console.Write("Enter name of loaner: ");
                     string loanerNameInput = Console.ReadLine();
-                    if (string.IsNullOrEmpty(loanerNameInput))
+                    if (string.IsNullOrWhiteSpace(loanerNameInput))
                     {
                         throw new Exception("Name input is invalid.");
                     }
                     System.Console.Write("Enter phone number of loaner: ");
                     string loanerPnInput = Console.ReadLine();
-                    if (string.IsNullOrEmpty(loanerPnInput))
+                    if (string.IsNullOrWhiteSpace(loanerPnInput))
                     {
                         throw new Exception("Phone number input is invalid.");
                     }
@@ -262,7 +262,7 @@ namespace library_system.Functions
                         loanerName = loanerNameInput,
                         phoneNumber = loanerPnInput,
                         Book = chosenBook,
-                        loanDate = DateOnly.ParseExact(DateTime.Now.ToString("yyyy-MMdd"), "yyyy-MMdd"), // Fixa fomateringen, främst på output
+                        loanDate = DateOnly.ParseExact(DateTime.Now.ToString("yyyy-MMdd"), "yyyy-MMdd"),
                         returnDate = DateOnly.ParseExact(DateTime.Now.AddDays(30).ToString("yyyy-MMdd"), "yyyy-MMdd"),
                         status = Loan.enStatus.Loaned
                     };
@@ -273,7 +273,7 @@ namespace library_system.Functions
                     transaction.Commit();
 
                     Console.Clear();
-                    System.Console.WriteLine($"{loanerNameInput} now has a loan on {bookNameInput}. Last day to return book: {newLoan.returnDate}.\n");
+                    System.Console.WriteLine($"{loanerNameInput} now has a loan on {bookNameInput}. Last day to return book: {newLoan.returnDate.ToString("yyyy-MM-dd")}.\n");
                 }
                 catch (Exception ex)
                 {
@@ -298,7 +298,7 @@ namespace library_system.Functions
                         // Asks user to enter their phone number for verification
                         System.Console.Write("Enter phone number to see your loans: ");
                         string pnInput = Console.ReadLine();
-                        if (string.IsNullOrEmpty(pnInput))
+                        if (string.IsNullOrWhiteSpace(pnInput))
                         {
                             throw new Exception("Phone number input is invalid.");
                         }
@@ -318,6 +318,7 @@ namespace library_system.Functions
 
                         Console.Clear();
                         System.Console.WriteLine($"{"BOOK NAME",-29}{"LOAN ID",-17}{"LOANER",-26}{"STATUS",-26}");
+                        System.Console.WriteLine("---------------------------------------------------------------------------------");
                         foreach (var l in currentLoans)
                         {
                             if (l.phoneNumber == pnInput)
@@ -325,11 +326,10 @@ namespace library_system.Functions
                                 System.Console.WriteLine($"{l.Book.bookName,-29}{l.loanId,-17}{l.loanerName,-26}{l.status,-26}");
                             }
                         }
-                        System.Console.WriteLine("\nEnter LOAN ID of the loan you want to return");
 
                         // Asks user to input the ID of the loan they want to delete
                         // Throws exception if input unable to be parsed as int
-                        System.Console.Write("Enter ID of loan: ");
+                        System.Console.WriteLine("\nEnter LOAN ID of the loan you want to return");
                         string idInput = Console.ReadLine();
                         int.TryParse(idInput, out int chosenId);
 
@@ -410,7 +410,7 @@ namespace library_system.Functions
                         // Throws exception if input is invalid in invalid format
                         System.Console.Write("Enter name of book: ");
                         string bookNameInput = Console.ReadLine();
-                        if (string.IsNullOrEmpty(bookNameInput))
+                        if (string.IsNullOrWhiteSpace(bookNameInput))
                         {
                             throw new Exception("Name input is invalid.");
                         }
@@ -463,7 +463,7 @@ namespace library_system.Functions
                         // Throws exception if input is invalid in invalid format
                         System.Console.Write("Enter name of author: ");
                         string authorNameInput = Console.ReadLine();
-                        if (string.IsNullOrEmpty(authorNameInput))
+                        if (string.IsNullOrWhiteSpace(authorNameInput))
                         {
                             throw new Exception("Name input is invalid.");
                         }
@@ -502,7 +502,7 @@ namespace library_system.Functions
                     }
                 }
             }
-            static void DeleteLoan() // FORTSÄTT HÄR! Ska man använda loanID istället för att välja? Kan presentera alla lån isf
+            static void DeleteLoan()
             {
                 // DISCLAIMER: Ask user if deleting loan is necessary
                 Console.Clear();
@@ -580,7 +580,7 @@ namespace library_system.Functions
             }
             static void DeleteAll()
             {
-                // DISCLAIMER: Ask user if deleting everyting is necessary
+                // DISCLAIMER Ask user if deleting everyting is necessary
                 Console.Clear();
                 System.Console.WriteLine("Are you sure you want to DELETE everyting? This action can't be reversed.\n");
                 System.Console.Write("Type (yes) to proceed. Type anything else to cancel. ");
@@ -624,6 +624,7 @@ namespace library_system.Functions
                 var transaction = context.Database.BeginTransaction();
                 try
                 {
+                    // Creates new books and adds to Books
                     var seededBook1 = new Book
                     {
                         bookName = "Harry Potter 1",
@@ -655,6 +656,7 @@ namespace library_system.Functions
                     context.Books.Add(seededBook4);
                     context.Books.Add(seededBook5);
 
+                    // Creates new authors and adds to Authors
                     var seededAuthor1 = new Author
                     {
                         authorName = "JK Rowling"
@@ -672,6 +674,7 @@ namespace library_system.Functions
                     context.Authors.Add(seededAuthor2);
                     context.Authors.Add(seededAuthor3);
 
+                    // Checking if some seed data is already provided, if so throws an excpetion
                     var books = context.Books.ToList();
                     if (books.Any(b => (b.bookName == seededBook1.bookName) || (b.bookName == seededBook2.bookName) || (b.bookName == seededBook3.bookName) || (b.bookName == seededBook4.bookName) || (b.bookName == seededBook5.bookName)))
                     {
@@ -686,6 +689,7 @@ namespace library_system.Functions
 
                     context.SaveChanges();
 
+                    // Creates BookAuthor relations and adds to BookAuthor
                     var seededBoAu1 = new BookAuthor
                     {
                         bookId = context.Books.First(b => b.bookName == "Harry Potter 1").bookId,
@@ -727,7 +731,7 @@ namespace library_system.Functions
                     context.SaveChanges();
                     transaction.Commit();
 
-                    System.Console.WriteLine("Database has been seeded!");
+                    System.Console.WriteLine("Database has been seeded!\n");
                 }
                 catch (Exception ex)
                 {

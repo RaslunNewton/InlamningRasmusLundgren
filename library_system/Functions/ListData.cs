@@ -59,7 +59,7 @@ namespace library_system.Functions
                     // User choooses name of author, throws exception if input is invalid
                     System.Console.Write("Enter name of author: ");
                     string nameInput = Console.ReadLine();
-                    if (string.IsNullOrEmpty(nameInput))
+                    if (string.IsNullOrWhiteSpace(nameInput))
                     {
                         throw new Exception("Name input is invalid. Try again.");
                     }
@@ -114,7 +114,7 @@ namespace library_system.Functions
                     // User choooses name of book, throws exception if input is invalid
                     System.Console.Write("Enter name of book: ");
                     string nameInput = Console.ReadLine();
-                    if (string.IsNullOrEmpty(nameInput))
+                    if (string.IsNullOrWhiteSpace(nameInput))
                     {
                         throw new Exception("Name input is invalid. Try again.");
                     }
@@ -212,8 +212,7 @@ namespace library_system.Functions
                     {
                         throw new Exception("Loan history is empty as of now.");
                     }
-                    // Iterates through every book in "books" and adds every author of each book to an string which is
-                    // represented along with each book
+
                     System.Console.WriteLine($"{"BOOK NAME",-29}{"LOAN ID",-17}{"LOANER",-26}{"STATUS",-16}{"RETURN DATE",-15}");
                     System.Console.WriteLine("----------------------------------------------------------------------------------------------------");
                     foreach (var b in books)
