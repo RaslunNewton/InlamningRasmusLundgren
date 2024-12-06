@@ -48,7 +48,8 @@ internal class Program
             System.Console.WriteLine("2 - Add new author");
             System.Console.WriteLine("3 - Add author to book");
             System.Console.WriteLine("4 - Loan a book");
-            System.Console.WriteLine("5 - Delete loan, book or author");
+            System.Console.WriteLine("5 - Return a book");
+            System.Console.WriteLine("6 - Delete loan, book or author");
             System.Console.WriteLine("Q - Return to main menu");
             System.Console.Write("\nWhat do you want to do?: ");
 
@@ -73,6 +74,10 @@ internal class Program
                     ManageData.CreateLoan();
                     break;
                 case "5":
+                    Console.Clear();
+                    ManageData.ReturnLoan();
+                    break;
+                case "6":
                     Console.Clear();
                     ManageData.DeleteData();
                     break;
